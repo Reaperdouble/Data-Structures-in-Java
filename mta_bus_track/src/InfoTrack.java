@@ -1,7 +1,11 @@
 
 import big.data.DataSource;
 import java.io.Serializable;
-import java.util.Hashtable;
+import java.util.ArrayDeque;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.Queue;
+
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -15,7 +19,8 @@ import java.util.Hashtable;
  */
 public class InfoTrack implements Serializable{
     private final String URL = "http://bustime.mta.info/api/siri/vehicle-monitoring.xml?key=fecc346b-a5c9-4e90-83cb-7616c2287641";
-    Hashtable<String, BusInfo> table = new Hashtable<String, BusInfo>();
+   // Queue<BusInfo> table = new Queue<BusInfo>();
+    private Queue<BusInfo> table = new LinkedList<BusInfo>();
     InfoTrack info;
     
     public void buildFromUrl(String busNumber){
@@ -35,8 +40,29 @@ public class InfoTrack implements Serializable{
         for (int i = 0; i < busName.length; i++) {
             BusInfo businfo = new BusInfo(vehicleRef[i], DistanceFromCall[i], presentableDistance[i],stopsAway[i], busName[i]
                     , destination[i], originId[i], destinationId[i], currentStop[i], currentStopId[i], latitude[i], longitude[i]);
-            this.put(id[i], businfo);
+            this.put(businfo);
         }
-    
+    }
+    public void put(BusInfo businformation){
+        table.add(businformation);
+    }
+
+    public void clearBuses() {
+        table.clear();
+    }
+    public String printBuses(){
+        int length = table.size();
+        String output =(String.format("%10s","Busname") + " | $" + 
+                String.format("%10s", "stopsAway")+" | "+
+                String.format("%25s", "Distance")+ " | "+ 
+                String.format("%25s", "currentStop")+ " | "+
+               // String.format("%10s",timeRemaining+" hours")+ " | "+
+                String.format("%25s", "destination"));
+        for(int i= 0; i< length; i++){
+            BusInfo temp = table.remove();
+            output += "/n" + temp.toString();
+            table.add(temp);
+        }
+        return output;
     }
 }
