@@ -22,21 +22,33 @@ public class InfoTrack implements Serializable{
    // Queue<BusInfo> table = new Queue<BusInfo>();
     private Queue<BusInfo> table = new LinkedList<BusInfo>();
     InfoTrack info;
-    
+    //+"&OperatorRef=MTA&MonitoringRef=502100&PublishedLineName="+busNumber
+    //
+    //VehicleActivity/MonitoredVehicleJourney/MonitoredCall/Extensions/Distances/
+    //VehicleActivity/MonitoredVehicleJourney/
+    //VehicleActivity/MonitoredVehicleJourney/MonitoredCall/Extensions/Distances/
+    //VehicleActivity/MonitoredVehicleJourney/
+    //VehicleActivity/MonitoredVehicleJourney/FramedVehicleJourneyRef/
+    //VehicleActivity/MonitoredVehicleJourney/FramedVehicleJourneyRef/
+    //VehicleActivity/MonitoredVehicleJourney/FramedVehicleJourneyRef/
+    //VehicleActivity/MonitoredVehicleJourney/MonitoredCall/Extensions/
+    //VehicleActivity/MonitoredVehicleJourney/MonitoredCall/Extensions/
+    //VehicleActivity/MonitoredVehicleJourney/VehicleLocation/
+    //VehicleActivity/MonitoredVehicleJourney/VehicleLocation/
     public void buildFromUrl(String busNumber){
-        DataSource source = DataSource.connectXML(URL+"&OperatorRef=MTA&MonitoringRef=502100&PublishedLineName="+busNumber).load();
-        String[] DistanceFromCall = source.fetchStringArray("VehicleActivity/MonitoredVehicleJourney/MonitoredCall/Extensions/Distances/DistanceFromCall");
-        String[] presentableDistance = source.fetchStringArray("VehicleActivity/MonitoredVehicleJourney/MonitoredCall/Extensions/Distances/PresentableDistance");
-        String[] vehicleRef = source.fetchStringArray("VehicleActivity/MonitoredVehicleJourney/VehicleRef");
-        int[] stopsAway = source.fetchIntArray("VehicleActivity/MonitoredVehicleJourney/MonitoredCall/Extensions/Distances/StopsFromCall");
-        String[] busName = source.fetchStringArray("VehicleActivity/MonitoredVehicleJourney/PublishedLineName");
-        String[] destination = source.fetchStringArray("VehicleActivity/MonitoredVehicleJourney/FramedVehicleJourneyRef/DestinationName");
-        String[] originId = source.fetchStringArray("VehicleActivity/MonitoredVehicleJourney/FramedVehicleJourneyRef/OriginRef");
-        String[] destinationId = source.fetchStringArray("VehicleActivity/MonitoredVehicleJourney/FramedVehicleJourneyRef/DestinationRef");
-        String[] currentStopId = source.fetchStringArray("VehicleActivity/MonitoredVehicleJourney/MonitoredCall/Extensions/StopPointRef");
-        String[] currentStop = source.fetchStringArray("VehicleActivity/MonitoredVehicleJourney/MonitoredCall/Extensions/StopPointName");
-        double[] latitude = source.fetchDoubleArray("VehicleActivity/MonitoredVehicleJourney/VehicleLocation/Latitude");
-        double[] longitude = source.fetchDoubleArray("VehicleActivity/MonitoredVehicleJourney/VehicleLocation/Longitude");
+        DataSource source = DataSource.connectXML(URL).load();
+        String[] DistanceFromCall = source.fetchStringArray("ServiceDelivery/VehicleMonitoringDelivery/VehicleActivity/MonitoredVehicleJourney/MonitoredCall/Extensions/Distances/DistanceFromCall");
+        String[] presentableDistance = source.fetchStringArray("PresentableDistance");
+        String[] vehicleRef = source.fetchStringArray("VehicleRef");
+        int[] stopsAway = source.fetchIntArray("StopsFromCall");
+        String[] busName = source.fetchStringArray("PublishedLineName");
+        String[] destination = source.fetchStringArray("DestinationName");
+        String[] originId = source.fetchStringArray("OriginRef");
+        String[] destinationId = source.fetchStringArray("DestinationRef");
+        String[] currentStopId = source.fetchStringArray("StopPointRef");
+        String[] currentStop = source.fetchStringArray("StopPointName");
+        double[] latitude = source.fetchDoubleArray("Latitude");
+        double[] longitude = source.fetchDoubleArray("Longitude");
         for (int i = 0; i < busName.length; i++) {
             BusInfo businfo = new BusInfo(vehicleRef[i], DistanceFromCall[i], presentableDistance[i],stopsAway[i], busName[i]
                     , destination[i], originId[i], destinationId[i], currentStop[i], currentStopId[i], latitude[i], longitude[i]);
