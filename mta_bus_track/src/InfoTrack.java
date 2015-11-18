@@ -18,14 +18,15 @@ import java.util.Queue;
  * @author radra_000
  */
 public class InfoTrack implements Serializable{
-    private final String URL = "http://bustime.mta.info/api/siri/vehicle-monitoring.xml?key=fecc346b-a5c9-4e90-83cb-7616c2287641";
+    private final String URL = "http://bustime.mta.info/api/siri/stop-monitoring.xml?key=fecc346b-a5c9-4e90-83cb-7616c2287641";
+    //"C:\\Users\\radra_000\\Desktop\\tmp.xml";//
    // Queue<BusInfo> table = new Queue<BusInfo>();
     private Queue<BusInfo> table = new LinkedList<BusInfo>();
     InfoTrack info;
     //+"&OperatorRef=MTA&MonitoringRef=502100&PublishedLineName="+busNumber
-    //
-    //VehicleActivity/MonitoredVehicleJourney/MonitoredCall/Extensions/Distances/
-    //VehicleActivity/MonitoredVehicleJourney/
+    //Siri/ServiceDelivery/VehicleMonitoringDelivery/VehicleActivity/MonitoredVehicleJourney/MonitoredCall/Extensions/Distances/DistanceFromCall"
+    //VehicleActivity/MonitoredVehicleJourney/MonitoredCall/Extensions/Distances/PresentableDistance
+    //VehicleActivity/MonitoredVehicleJourney/VehicleRef
     //VehicleActivity/MonitoredVehicleJourney/MonitoredCall/Extensions/Distances/
     //VehicleActivity/MonitoredVehicleJourney/
     //VehicleActivity/MonitoredVehicleJourney/FramedVehicleJourneyRef/
@@ -36,10 +37,21 @@ public class InfoTrack implements Serializable{
     //VehicleActivity/MonitoredVehicleJourney/VehicleLocation/
     //VehicleActivity/MonitoredVehicleJourney/VehicleLocation/
     public void buildFromUrl(String busNumber){
-        DataSource source = DataSource.connectXML(URL).load();
-        String[] DistanceFromCall = source.fetchStringArray("ServiceDelivery/VehicleMonitoringDelivery/VehicleActivity/MonitoredVehicleJourney/MonitoredCall/Extensions/Distances/DistanceFromCall");
+        DataSource source = DataSource.connectXML("C:\\Users\\radra_000\\Desktop\\stop-monitoring.xml").load();
+        //System.out.println(URL+"&OperatorRef=MTA&MonitoringRef=502100&PublishedLineName="+busNumber);
+        //String[] name = (source.fetchStringArray("ServiceDelivery/StopMonitoringDelivery/MonitoredStopVisit/MonitoredVehicleJourney/VehicleRef"));
+        //System.out.println(source.getFullPathURL());
+         
+          String xxxx = source.fetchString("ServiceDelivery/StopMonitoringDelivery/MonitoredStopVisit/MonitoredVehicleJourney/MonitoredCall/Extensions");
+//        for(int i = 0; i <DistanceFromCall.length; i++ ){
+//            System.out.println(DistanceFromCall[i]);
+//        }
+          System.out.println(xxxx);
+          String[] DistanceFromCall = source.fetchStringArray("ServiceDelivery/StopMonitoringDelivery/MonitoredStopVisit/MonitoredVehicleJourney/MonitoredCall/Extensions");
+        //System.out.println(source.getFieldSpec());
+       
         String[] presentableDistance = source.fetchStringArray("PresentableDistance");
-        String[] vehicleRef = source.fetchStringArray("VehicleRef");
+        String[] vehicleRef = source.fetchStringArray("ServiceDelivery/VehicleMonitoringDelivery/VehicleActivity/MonitoredVehicleJourney/VehicleRef");
         int[] stopsAway = source.fetchIntArray("StopsFromCall");
         String[] busName = source.fetchStringArray("PublishedLineName");
         String[] destination = source.fetchStringArray("DestinationName");
