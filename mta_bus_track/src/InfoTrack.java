@@ -37,12 +37,12 @@ public class InfoTrack implements Serializable{
     //VehicleActivity/MonitoredVehicleJourney/VehicleLocation/
     //VehicleActivity/MonitoredVehicleJourney/VehicleLocation/
     public void buildFromUrl(String busNumber){
-        DataSource source = DataSource.connectXML("C:\\Users\\radra_000\\Desktop\\stop-monitoring.xml").load();
+        DataSource source = DataSource.connectXML(URL+"&MonitoringRef=502100").load();//&PublishedLineName="+busNumber).load();
         //System.out.println(URL+"&OperatorRef=MTA&MonitoringRef=502100&PublishedLineName="+busNumber);
         //String[] name = (source.fetchStringArray("ServiceDelivery/StopMonitoringDelivery/MonitoredStopVisit/MonitoredVehicleJourney/VehicleRef"));
         //System.out.println(source.getFullPathURL());
          
-          String xxxx = source.fetchString("ServiceDelivery/StopMonitoringDelivery/MonitoredStopVisit/MonitoredVehicleJourney/MonitoredCall/Extensions");
+          String xxxx = source.fetchString("ServiceDelivery/StopMonitoringDelivery/MonitoredStopVisit/MonitoredVehicleJourney/MonitoredCall/Extensions/Distances");//PresentableDistance");
 //        for(int i = 0; i <DistanceFromCall.length; i++ ){
 //            System.out.println(DistanceFromCall[i]);
 //        }

@@ -1,0 +1,13 @@
+<Root>
+	<Attr>
+		<S1>Hi</S1>
+	</Attr>
+	<Extensions>
+		<Distances>
+			<CallDistanceAlongRoute>2947.5</CallDistanceAlongRoute>
+			<DistanceFromCall>451.52</DistanceFromCall>
+			<PresentableDistance>2 stops away</PresentableDistance>
+			<StopsFromCall>2</StopsFromCall>
+		</Distances>
+	</Extensions>
+</Root>
