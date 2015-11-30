@@ -12,7 +12,7 @@ public class WebGraph {
 
     public static final int MAX_PAGES = 40;
     private static ArrayList<WebPage> pages = new ArrayList();
-    private ArrayList<Integer> array = new ArrayList(MAX_PAGES);
+    //private ArrayList<Integer> array = new ArrayList(MAX_PAGES);
     //private ArrayList<ArrayList<Integer>> links = new ArrayList(MAX_PAGES);
     private int[][] links = new int[MAX_PAGES][MAX_PAGES];
     private int count = 0;
@@ -78,42 +78,77 @@ public class WebGraph {
         } else {
            // links.add(array);
            // System.out.println(links.get(0).size());
-           // links.get(x).set(y, 1);             //check if it works
-            String test = "";
-            for(int i = 0; i < links.length;i++){
-                for(int j = 0; j< links.length; j++){
-                    System.out.print(links[i][j].get(0));
-                }
-                System.out.println("");
-            }
-            System.out.println();
-            links[x][y].add(1);
+//           // links.get(x).set(y, 1);             //check if it works
+//            String test = "";
+//            for(int i = 0; i < links.length;i++){
+//                for(int j = 0; j< links.length; j++){
+//                    System.out.print(links[i][j]);
+//                }
+//                System.out.println("");
+//            }
+//            System.out.println();
+            links[x][y] = 1;
         }
         updatePageRanks();
     }
 
     public void removePage(String url) {
-        WebPage[] webpage = (WebPage[]) pages.toArray();
-        for (int i = 0; i < webpage.length; i++) {
+        for (int i = 0; i < pages.size(); i++) {
             if (pages.get(i).getUrl().equals(url)) {
-                pages.remove(pages.get(i));
                 //removing links
-                System.out.println(links.toString());
-                for (int k = 0; k < links.length; k++) {
-                   // links.get(webpage[j].getIndex()).remove(pages.get(i).getIndex());  //check if it removes the intended column
-                    links[k][i].removeElementAt(i);
+            for(int k = 0; k < pages.size();k++){
+                for(int j = 0; j< pages.size(); j++){
+                    System.out.print(links[k][j]+"\t");
                 }
-                for (int j = 0; j < links.length; j++) {
-                   // links.get(webpage[j].getIndex()).remove(pages.get(i).getIndex());  //check if it removes the intended column
-                    links[i][j].removeElementAt(i);
-                }
-                System.out.println(links.toString());
+                System.out.println("");
+            }
+                System.out.println("\n\n\n");
+                removeArray(i);
+                //removing pages
+                pages.remove(pages.get(i));
+                reassignIndex();
+//                System.out.println(links.toString());
+//                for (int k = 0; k < links.length; k++) {
+//                   // links.get(webpage[j].getIndex()).remove(pages.get(i).getIndex());  //check if it removes the intended column
+//                    links[k][i].removeElementAt(i);
+//                }
+//                for (int j = 0; j < links.length; j++) {
+//                   // links.get(webpage[j].getIndex()).remove(pages.get(i).getIndex());  //check if it removes the intended column
+//                    links[i][j].removeElementAt(i);
+//                }
+//                System.out.println(links.toString());
                // links.remove(pages.get(i).getIndex());                             //check if it removes the intended row
                 
             }
         }
     }
-
+    public void reassignIndex(){
+         for (int i = 0; i < pages.size(); i++) {
+            pages.get(i).setIndex(i);
+         }
+    }
+    public void removeArray(int index){
+        System.out.println(pages.size());
+        for(int i = 0; i< pages.size(); i++){
+            for(int j = index; j<pages.size()-1; j++){
+                links[i][j] = links[i][j+1];
+                
+            }
+        }
+        for(int i = index; i< pages.size(); i++){
+            for(int j = 0; j<pages.size()-1; j++){
+                links[i][j] = links[i+1][j];  
+            }
+        }
+        
+        System.out.println(pages.size());
+        for(int k = 0; k < pages.size();k++){
+                for(int j = 0; j< pages.size(); j++){
+                    System.out.print(links[k][j]+"\t");
+                }
+                System.out.println("");
+            }
+    }
     public void removeLink(String source, String destination) {
         int x = -1, y = -1;
         for (int i = 0; i < pages.size(); i++) {
@@ -126,7 +161,7 @@ public class WebGraph {
         }
         if (x == -1 || y == -1) {
         } else {
-            links[x][y].add(1);            //check if it works
+            links[x][y] = 0;            //check if it works
         }
         updatePageRanks();
     }
@@ -135,8 +170,7 @@ public class WebGraph {
         int count = 0;
         for (int i = 0; i < pages.size(); i++) {
             for (int j = 0; j < pages.size(); j++) {
-                count += links[j][i].elementAt(i);
-                System.out.println(links[j][i].elementAt(i));
+                count += links[j][i];
             }
             pages.get(i).setRank(count);
             count = 0;
@@ -144,6 +178,7 @@ public class WebGraph {
     }
 
     public void printTable(String sorting) {
+        updatePageRanks();
         ArrayList<WebPage> copy = new ArrayList<>();
         copy.addAll(pages);
         switch (sorting) {
@@ -160,22 +195,27 @@ public class WebGraph {
             default:
                 return;
         }
-        WebPage[] webpage = (WebPage[]) copy.toArray();
-        String heading = String.format("%10s", "Index")
-                + String.format("%20s", "URL")
-                + String.format("%10s", "PageRank")
-                + String.format("%20s", "Links")
-                + String.format("%40s", "Keywords") + "\n"
+        WebPage[] webpage =  copy.toArray(new WebPage[0]);
+        String heading = String.format("%-10s", "Index")
+                + String.format("%-20s", "URL")
+                + String.format("%-10s", "PageRank")
+                + String.format("%-20s", "Links")
+                + String.format("%-40s", "Keywords") + "\n"
                 + "---------------------------------------------------------------"
                 + "-------------------------------------------------------------";
         System.out.println(heading);
-        String linkNum = "";
-        for (int i = 0; i < webpage.length; i++) {
+        
+        for (int k = 0; k < webpage.length; k++) {
+            int i = webpage[k].getIndex();
+            String linkNum = "";
             for (int j = 0; j < webpage.length; j++) {
-                linkNum += "," + links[i][j].get(j);
+                linkNum += (links[i][j]==1)?j+",":"";
             }
-            String output = webpage[i].toString();
-            output.replaceAll("****", linkNum);
+            linkNum = (linkNum.length()>1)?linkNum.substring(0, linkNum.length()-1):"";
+            String output = webpage[k].toString();
+            output = output.replace("****", String.format("%-20s", linkNum));
+            output = output.replace("[", "");
+            output = output.replace("]", "");
             System.out.println(output);
         }
     }
@@ -184,18 +224,19 @@ public class WebGraph {
         ArrayList<WebPage> copy = new ArrayList<>();
         copy.addAll(pages);
         Collections.sort(copy, new RankComparator());
-        WebPage[] webpage = (WebPage[]) copy.toArray();
-        String output = String.format("%10s", "Rank") + 
-                String.format("%20s", "PageRank") + 
-                String.format("%40s", "URL")+
+        WebPage[] webpage = copy.toArray(new WebPage[0]);
+        String output = String.format("%-10s", "Rank") + 
+                String.format("%-15s", "PageRank") + 
+                String.format("%-40s", "URL")+
                 "\n-------------------------------------------------------------"
                 + "------------------------------------------";
         int count = 1;
         for (int i = 0; i < webpage.length; i++) {
             if (webpage[i].getKeyword().contains(keyword)){
-                output += ("\n"+String.format("%10s", count++)+String.format("%20s", webpage[i].getRank())+String.format("%40s", webpage[i].getUrl()));
+                output += ("\n"+String.format("%-10s", count++)+String.format("%-20s", "|"+webpage[i].getRank())+String.format("%-40s", "|\t"+webpage[i].getUrl()));
             }
         }
+        output = (output.length()>169)?output:"no such keyword exists";
         return output;
     }
 }
