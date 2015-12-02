@@ -1,10 +1,19 @@
 
 import big.data.DataSource;
+import java.io.File;
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Queue;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.text.Document;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import org.xml.sax.SAXException;
 
 
 /*
@@ -18,7 +27,7 @@ import java.util.Queue;
  * @author radra_000
  */
 public class InfoTrack implements Serializable{
-    private final String URL = "http://bustime.mta.info/api/siri/stop-monitoring.xml?key=fecc346b-a5c9-4e90-83cb-7616c2287641";
+    private final String URL = "C:/Users/radra_000/Desktop/stop-monitoring.xml";// "http://bustime.mta.info/api/siri/stop-monitoring.xml?key=fecc346b-a5c9-4e90-83cb-7616c2287641&OperatorRef=MTA&StopPointName=HILLSIDE%20AV/WINCHESTER%20BL&MonitoringRef=502100";//http://bustime.mta.info/api/siri/stop-monitoring.xml?key=fecc346b-a5c9-4e90-83cb-7616c2287641";
     //"C:\\Users\\radra_000\\Desktop\\tmp.xml";//
    // Queue<BusInfo> table = new Queue<BusInfo>();
     private Queue<BusInfo> table = new LinkedList<BusInfo>();
@@ -37,34 +46,53 @@ public class InfoTrack implements Serializable{
     //VehicleActivity/MonitoredVehicleJourney/VehicleLocation/
     //VehicleActivity/MonitoredVehicleJourney/VehicleLocation/
     public void buildFromUrl(String busNumber){
-        DataSource source = DataSource.connectXML(URL+"&MonitoringRef=502100").load();//&PublishedLineName="+busNumber).load();
-        //System.out.println(URL+"&OperatorRef=MTA&MonitoringRef=502100&PublishedLineName="+busNumber);
-        //String[] name = (source.fetchStringArray("ServiceDelivery/StopMonitoringDelivery/MonitoredStopVisit/MonitoredVehicleJourney/VehicleRef"));
-        //System.out.println(source.getFullPathURL());
-         
-          String xxxx = source.fetchString("ServiceDelivery/StopMonitoringDelivery/MonitoredStopVisit/MonitoredVehicleJourney/MonitoredCall/Extensions/Distances");//PresentableDistance");
+        try {
+            //"C:/Users/radra_000/Desktop/stop-monitoring.xml").load();//
+            DataSource source = DataSource.connectXML(URL).load();//&PublishedLineName="+busNumber).load();
+            //System.out.println(URL+"&OperatorRef=MTA&MonitoringRef=502100&PublishedLineName="+busNumber);
+            //String[] name = (source.fetchStringArray("ServiceDelivery/StopMonitoringDelivery/MonitoredStopVisit/MonitoredVehicleJourney/VehicleRef"));
+            //System.out.println(source.getFullPathURL());
+            File fXmlFile = new File("C:/Users/radra_000/Desktop/stop-monitoring.xml");
+            DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+            DocumentBuilder dBuilder;
+            try {
+                dBuilder = dbFactory.newDocumentBuilder();
+                dom =  dBuilder.parse(fXmlFile);
+                 System.out.println(doc);
+            } catch (ParserConfigurationException ex) {
+                Logger.getLogger(InfoTrack.class.getName()).log(Level.SEVERE, null, ex);
+            }
+           
+            
+            
+            String xxxx = source.fetchString("ServiceDelivery/StopMonitoringDelivery/MonitoredStopVisit/MonitoredVehicleJourney/MonitoredCall/Extensions/Distances");///Distances/DistanceFromCall");//PresentableDistance");
 //        for(int i = 0; i <DistanceFromCall.length; i++ ){
 //            System.out.println(DistanceFromCall[i]);
 //        }
-          System.out.println(xxxx);
-          String[] DistanceFromCall = source.fetchStringArray("ServiceDelivery/StopMonitoringDelivery/MonitoredStopVisit/MonitoredVehicleJourney/MonitoredCall/Extensions");
-        //System.out.println(source.getFieldSpec());
-       
-        String[] presentableDistance = source.fetchStringArray("PresentableDistance");
-        String[] vehicleRef = source.fetchStringArray("ServiceDelivery/VehicleMonitoringDelivery/VehicleActivity/MonitoredVehicleJourney/VehicleRef");
-        int[] stopsAway = source.fetchIntArray("StopsFromCall");
-        String[] busName = source.fetchStringArray("PublishedLineName");
-        String[] destination = source.fetchStringArray("DestinationName");
-        String[] originId = source.fetchStringArray("OriginRef");
-        String[] destinationId = source.fetchStringArray("DestinationRef");
-        String[] currentStopId = source.fetchStringArray("StopPointRef");
-        String[] currentStop = source.fetchStringArray("StopPointName");
-        double[] latitude = source.fetchDoubleArray("Latitude");
-        double[] longitude = source.fetchDoubleArray("Longitude");
-        for (int i = 0; i < busName.length; i++) {
-            BusInfo businfo = new BusInfo(vehicleRef[i], DistanceFromCall[i], presentableDistance[i],stopsAway[i], busName[i]
-                    , destination[i], originId[i], destinationId[i], currentStop[i], currentStopId[i], latitude[i], longitude[i]);
-            this.put(businfo);
+            System.out.println(xxxx);
+            String[] DistanceFromCall = source.fetchStringArray("ServiceDelivery/StopMonitoringDelivery/MonitoredStopVisit/MonitoredVehicleJourney/MonitoredCall/Extensions");
+            //System.out.println(source.getFieldSpec());
+            
+            String[] presentableDistance = source.fetchStringArray("PresentableDistance");
+            String[] vehicleRef = source.fetchStringArray("ServiceDelivery/VehicleMonitoringDelivery/VehicleActivity/MonitoredVehicleJourney/VehicleRef");
+            int[] stopsAway = source.fetchIntArray("StopsFromCall");
+            String[] busName = source.fetchStringArray("PublishedLineName");
+            String[] destination = source.fetchStringArray("DestinationName");
+            String[] originId = source.fetchStringArray("OriginRef");
+            String[] destinationId = source.fetchStringArray("DestinationRef");
+            String[] currentStopId = source.fetchStringArray("StopPointRef");
+            String[] currentStop = source.fetchStringArray("StopPointName");
+            double[] latitude = source.fetchDoubleArray("Latitude");
+            double[] longitude = source.fetchDoubleArray("Longitude");
+            for (int i = 0; i < busName.length; i++) {
+                BusInfo businfo = new BusInfo(vehicleRef[i], DistanceFromCall[i], presentableDistance[i],stopsAway[i], busName[i]
+                        , destination[i], originId[i], destinationId[i], currentStop[i], currentStopId[i], latitude[i], longitude[i]);
+                this.put(businfo);
+            }
+        } catch (SAXException ex) {
+            Logger.getLogger(InfoTrack.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException ex) {
+            Logger.getLogger(InfoTrack.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
     public void put(BusInfo businformation){

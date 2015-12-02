@@ -3,23 +3,47 @@ import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Scanner;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
 
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * Rajith Radhakrishnan 
+ * 109061463 
+ * rajith.radhakrishnan@stonybrook.edu 
+ * HW#7 CSE 214- R06 
+ * TA - Frank Migliorino 
+ * GA - Yu Wang
  */
 /**
+ * search engine class will initialize a WebGraph from the appropriate text
+ * files and allows the user to search for the keywords in the graph. The class
+ * also provides a functionality to to add and remove pages to and from the
+ * graph, in addition to allowing the user to modify the hyperlinks between the
+ * graph.This is the main class of this assignment.
  *
  * @author radra_000
  */
 public class SearchEngine {
 
+    /**
+     * PAGES_FILE variable is a constant string containing information about the
+     * name of the pages text file.
+     */
     public static final String PAGES_FILE = "pages.txt";
+
+    /**
+     * LINKS_FILE variable is a constant string containing information about the
+     * name of the links text file.
+     */
     public static final String LINKS_FILE = "links.txt";
 
+    /**
+     * main method that will prompt the user for the instruction to run the
+     * program it will display the menu option for the user to select from and
+     * enter the information.
+     *
+     * @param args arguments that will be passed in when the program is run from
+     * command line
+     */
     public static void main(String[] args) {
         WebGraph web = new WebGraph();
         boolean run = true;
@@ -40,34 +64,32 @@ public class SearchEngine {
                     + "\n\t(AL) - Add a link between pages in the graph"
                     + "\n\t(RM) - Remove a link between pages in the graph"
                     + "\n\t(P) - Print the graph."
-                    + "\n\t(S) - Search for pages with a keywork"
+                    + "\n\t(S) - Search for pages with a keyword"
                     + "\n\t(Q) - Quit"
                     + "\nSelect an Option: ");
             String entry = input.nextLine().toUpperCase();
             switch (entry) {
                 case ("AP"):
-                    try{
-                    System.out.println("Enter a URL: ");
-                    String url = input.nextLine();
-                    System.out.println("Enter keywords(space - seperated): ");
-                    ArrayList<String> keywords = new ArrayList<>(Arrays.asList(input.nextLine().split(" ")));
-                    web.addPage(url, keywords);
-                    System.out.println(url + " succesfully added to the WebGraph");
-                    }
-                    catch(Exception e){
+                    try {
+                        System.out.println("Enter a URL: ");
+                        String url = input.nextLine();
+                        System.out.println("Enter keywords(space - seperated): ");
+                        ArrayList<String> keywords = new ArrayList<>(Arrays.asList(input.nextLine().split(" ")));
+                        web.addPage(url, keywords);
+                        System.out.println(url + " succesfully added to the WebGraph");
+                    } catch (Exception e) {
                         System.out.println("The url already exists");
                     }
                     break;
                 case ("AL"):
-                    try{
-                    System.out.println("Enter a source URL: ");
-                    String source = input.nextLine();
-                    System.out.println("Enter a destination URL: ");
-                    String destination = input.nextLine();
-                    web.addlink(source, destination);
-                    System.out.println("Link Sucessfully added from " + source + " to " + destination + "!");
-                    }
-                    catch(Exception e){
+                    try {
+                        System.out.println("Enter a source URL: ");
+                        String source = input.nextLine();
+                        System.out.println("Enter a destination URL: ");
+                        String destination = input.nextLine();
+                        web.addlink(source, destination);
+                        System.out.println("Link Sucessfully added from " + source + " to " + destination + "!");
+                    } catch (Exception e) {
                         System.out.println("The URL for source/destinaion is not there");
                     }
                     break;
@@ -75,7 +97,7 @@ public class SearchEngine {
                     System.out.println("Enter a URL");
                     String webUrl = input.nextLine();
                     web.removePage(webUrl);
-                    System.out.println(webUrl+" has been removed from the graph");
+                    System.out.println(webUrl + " has been removed from the graph");
                     break;
                 case ("RL"):
                     System.out.println("Enter a source URL: ");
@@ -83,7 +105,7 @@ public class SearchEngine {
                     System.out.println("Enter a destination URL: ");
                     String destination1 = input.nextLine();
                     web.removeLink(source1, destination1);
-                    System.out.println("Link removed from "+source1+" to "+destination1+"!");
+                    System.out.println("Link removed from " + source1 + " to " + destination1 + "!");
                     break;
                 case ("P"):
                     System.out.println("\t(I) - Sort based on index (ASC)"
